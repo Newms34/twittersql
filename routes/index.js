@@ -8,13 +8,14 @@ var sequelize = require ('sequelize');
 function routes(io){
 
 router.get('/', function (req, res) {
-  // var tweetDBList = [];//array to hold the list o tweetz.
+  var tweetDBList = [];//array to hold the list o tweetz.
   Tweet.findAll().then( function (tweet){
-    // for (var i=0;i<tweet.length;i++){
-    //   tweetDBList.push(tweet[i].dataValues);
-    // }
-    console.log('HERE IS THE LINE: '+tweet[0].dataValues.tweet);
-    // res.render( 'index', { title: 'Twitter.js - All Posts', tweets: tweetDBList, showForm: true, name: '', pic:'http://lorempixel.com/48/48'  });
+    for (var i=0;i<tweet.length;i++){
+      tweetDBList.push(tweet[i].dataValues);
+    }
+    tweetNum = tweet.length;
+    
+    res.render( 'index', { title: 'Twitter.js - All Posts', tweets: tweetDBList, showForm: true, name: '', pic:'http://lorempixel.com/48/48'  });
   });
   // var tweets = tweetBank.list();
   
@@ -40,13 +41,19 @@ router.get('/users/:name/tweets/:id', function (req,res){
 });
 
 router.post('/submit', function(req, res) {
-  var name = req.body.name;
   var text = req.body.text;
-  tweetBank.add(name, text);
-  var allTweets = tweetBank.list(),
-  newTweet  = allTweets[allTweets.length-1];
-  io.sockets.emit('newTweet',{})
-  res.redirect('/');
+  var nameStr = req.body.name;
+  var name = User.find({where: {name: nameStr}}).then(function(yoozr){
+    console.log('User is: '+yoozr.id);
+  });
+  
+  
+  // //convert name using a join to the 
+  //   Tweet.create({id:++tweetNum, UserId: userId, tweet:text}).then(function(){
+         
+  //      })
+  // res.redirect('/');
+
 });
 return router;
 }

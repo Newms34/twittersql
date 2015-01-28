@@ -8,7 +8,7 @@ var app=express();
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(morgan('dev'));
-
+var tweetNum = 0;
 
 
 //body stuff
