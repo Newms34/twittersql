@@ -41,3 +41,12 @@ var server = app.listen(3000, function () {
 var io = socketio.listen(server);
 var routes = require('./routes/')(io);
 app.use('/',routes);
+
+
+// var Sequelize = require('sequelize');
+// var User = require('./models/user.js').User;
+// User.find(123).complete(function(err, user) {
+//     user.getTweets().complete(function(err, tweets) {
+//         console.log(tweets);
+//   })
+// });

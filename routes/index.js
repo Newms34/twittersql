@@ -1,15 +1,27 @@
 var express = require('express');
 var tweetBank = require('../tweetBank');
 var router = express.Router();
-
+var User = require('../models').User;
+var Tweet = require('../models').Tweet;
+var sequelize = require ('sequelize');
 
 function routes(io){
+
 router.get('/', function (req, res) {
-  var tweets = tweetBank.list();
-  res.render( 'index', { title: 'Twitter.js - All Posts', tweets: tweets, showForm: true, name: ' ', pic:'http://lorempixel.com/48/48'  } );
+  // var tweetDBList = [];//array to hold the list o tweetz.
+  Tweet.findAll().then( function (tweet){
+    // for (var i=0;i<tweet.length;i++){
+    //   tweetDBList.push(tweet[i].dataValues);
+    // }
+    console.log('HERE IS THE LINE: '+tweet[0].dataValues.tweet);
+    // res.render( 'index', { title: 'Twitter.js - All Posts', tweets: tweetDBList, showForm: true, name: '', pic:'http://lorempixel.com/48/48'  });
+  });
+  // var tweets = tweetBank.list();
+  
+
+  
+  
 });
-
-
 
 router.get('/users/:name', function(req, res) {
   var name = req.params.name;
@@ -39,6 +51,3 @@ router.post('/submit', function(req, res) {
 return router;
 }
 module.exports = routes;
-
-
-
