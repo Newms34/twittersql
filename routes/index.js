@@ -9,13 +9,17 @@ function routes(io){
 
 router.get('/', function (req, res) {
   var tweetDBList = [];//array to hold the list o tweetz.
-  Tweet.findAll().then( function (tweet){
+  // User.hasMany(Tweet,{foreignKey:'UserId'});
+  // Tweet.belongsToMany(User,{foreignKey:'id'})
+  Tweet.findAll({ include: [ User ] }).then( function (tweet){
     for (var i=0;i<tweet.length;i++){
       tweetDBList.push(tweet[i].dataValues);
     }
-    tweetNum = tweet.length;
     
-    res.render( 'index', { title: 'Twitter.js - All Posts', tweets: tweetDBList, showForm: true, name: '', pic:'http://lorempixel.com/48/48'  });
+    //from tweet, we get: userid, tweet (the text), id
+    tweetNum = tweet.length;
+    res.render( 'index', { title: 'Twitter.js - All Posts', tweets: tweetDBList, namePerTweet: 'Bob',showForm: true, name: '', pic:'http://lorempixel.com/48/48'  });    
+    
   });
   // var tweets = tweetBank.list();
   
@@ -23,36 +27,50 @@ router.get('/', function (req, res) {
   
   
 });
-
+// app.get('/users/:name', function(req, res) {
+//       var name = req.params.name;
+//    User.find({ include: Tweet, where: {name: name}}).then(function(user) {
+//        res.render( 'index', { title: 'Twitter.js - Posts by ' + user.name, tweets: user.Tweets, showForm: true, name: name} );
+//    })
+//     });
 router.get('/users/:name', function(req, res) {
   var name = req.params.name;
-  var list = tweetBank.find( {name: name} );
-  res.render( 'index', { title: 'Twitter.js - Posts by '+name, tweets: list, showForm: true, name: name, pic:'http://lorempixel.com/48/48' } );
+User.find({ include: Tweet, where: {name: name}}).then(function(user) {
+
+       res.render( 'index', { title: 'Twitter.js - Posts by ' + user.name, tweets: user.Tweets, showForm: true, name: name} );
+   })
 });
 
 router.get('/users/:name/tweets/:id', function (req,res){
 	var userName = req.params.name,
 	tweetId = parseInt(req.params.id);
-	userTweets =  tweetBank.find({id: tweetId});
+User.find({ include: Tweet, where: {name: userName, id:tweetId}}).then(function(user) {
+
 	res.render('index',{
 		title: 'Tweet '+tweetId+' by '+userName,
 		tweets:userTweets, showForm: true, name:userName, pic: 'http://lorempixel.com/48/48' 
 	});
+});
 });
 
 router.post('/submit', function(req, res) {
   var text = req.body.text;
   var nameStr = req.body.name;
   var name = User.find({where: {name: nameStr}}).then(function(yoozr){
-    console.log('User is: '+yoozr.id);
+    if (yoozr!==null){
+     Tweet.create({id:++tweetNum, UserId: yoozr.id, tweet:text}).then(function(){
+         
+       })
+ 
+    }
+    else {
+      console.log ('ur a noob');
+    }
+       res.redirect('/');
   });
   
   
   // //convert name using a join to the 
-  //   Tweet.create({id:++tweetNum, UserId: userId, tweet:text}).then(function(){
-         
-  //      })
-  // res.redirect('/');
 
 });
 return router;

@@ -30,8 +30,8 @@
       <!-- display tweets here -->
       {% for tweet in tweets %}
         <li>
-        	<a href="/users/{{tweet.UserId}}"><img src = '{{pic}}' class='dudeImg'/><div class = 'tweetTxtDiv'><b>{{tweet.UserId}}</b></a><br/>
-        	<a href="/users/{{tweet.UserId}}/id/{{tweet.id}}">{{tweet.tweet}}</a><br/>
+        	<a href="/users/{{namePerTweet}}"><img src = '{{pic}}' class='dudeImg'/><div class = 'tweetTxtDiv'><b>{{tweet.name}}</b></a><br/>
+        	<a href="/users/{{namePerTweet}}/id/{{tweet.id}}">{{tweet.tweet}}</a><br/>
         	<a href="#">Re-tweet</a>
         	</div><br/>
         <br/></li>
